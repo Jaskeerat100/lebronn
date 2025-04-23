@@ -2,8 +2,8 @@ import pandas as pd
 from collections import defaultdict
 from functools import reduce
 
-# -------- REGULAR SEASON DATA --------
-# Format: (Season, Team, G, GS, PPG, FG%, FT%, FGA, MPG, POS, AST)
+# REGULAR SEASON DATA
+# Format (Season, Team, G, GS, PPG, FG%, FT%, FGA, MPG, POS, AST)
 lebron_regular = [
     ("2003-04", "CLE", 79, 79, 20.9, 0.417, 0.754, 18.9, 39.5, "SF", 5.9),
     ("2004-05", "CLE", 80, 80, 27.2, 0.472, 0.750, 20.4, 42.4, "SF", 7.2),
@@ -25,8 +25,8 @@ lebron_regular = [
     ("2020-21", "LAL", 45, 45, 25.0, 0.513, 0.698, 18.3, 33.4, "PG", 7.8),
 ]
 
-# -------- PLAYOFF DATA --------
-# Format: (Season, G, PPG, FGA, MPG, FG%)
+# PLAYOFF DATA 
+# Format (Season, G, PPG, FGA, MPG, FG%)
 lebron_playoffs = [
     ("2005-06", 13, 30.8, 21.5, 42.5, 0.476),
     ("2006-07", 20, 25.1, 21.3, 41.4, 0.416),
@@ -44,12 +44,10 @@ lebron_playoffs = [
     ("2019-20", 21, 27.6, 20.7, 41.0, 0.560),
 ]
 
-# Convert playoff list to dictionary by season
+
 playoff_dict = {s[0]: s for s in lebron_playoffs}
 
-# -------- FUNCTIONAL ANALYSIS --------
 
-# Regular Season Functional Answers
 over_28_ppg = list(map(lambda x: x[0], filter(lambda x: x[4] > 28, lebron_regular)))
 fg_over_500 = list(map(lambda x: x[0], filter(lambda x: x[5] > 0.5, lebron_regular)))
 cle_ft_over_720 = list(map(lambda x: x[0], filter(lambda x: x[1] == "CLE" and x[6] > 0.720, lebron_regular)))
@@ -61,14 +59,14 @@ total_gs = sum(map(lambda x: x[3], lebron_regular))
 percent_started = round((total_gs / total_games) * 100, 2)
 years_played = len(lebron_regular)
 
-# AST by position
+
 ast_by_pos = defaultdict(list)
 for x in lebron_regular:
     ast_by_pos[x[9]].append(x[10])
 avg_ast_by_pos = {pos: sum(vals)/len(vals) for pos, vals in ast_by_pos.items()}
 best_ast_pos = max(avg_ast_by_pos, key=avg_ast_by_pos.get)
 
-# Playoff Analysis
+
 total_playoff_games = sum(p[1] for p in lebron_playoffs)
 total_fga = sum(p[3] * p[1] for p in lebron_playoffs)
 avg_fga_playoffs = round(total_fga / total_playoff_games, 2)
@@ -85,9 +83,8 @@ for reg in lebron_regular:
 mpg_comparison = list(map(lambda s: (s[0], s[8], playoff_dict[s[0]][4]), filter(lambda s: s[0] in playoff_dict, lebron_regular)))
 both_above_500_seasons = [s[0] for s in lebron_regular if s[0] in playoff_dict and s[5] > 0.5 and playoff_dict[s[0]][5] > 0.5]
 
-# -------- FINAL OUTPUT --------
+# OUTPUT
 
-print("\n===== LEBRON JAMES REGULAR SEASON ANALYSIS =====")
 print("1. Seasons > 28 PPG:", over_28_ppg)
 print("2. Seasons FG% > .500:", fg_over_500)
 print("3. CLE Seasons FT% > .720:", cle_ft_over_720)
@@ -99,14 +96,14 @@ for season, missed in games_missed:
 print("7. % Games Started:", f"{percent_started}%")
 print("8. Years Played:", years_played)
 print("9. AST Avg by Position:", avg_ast_by_pos)
-print("   -> Highest: ", best_ast_pos)
+print("   Highest: ", best_ast_pos)
 
-print("\n===== PLAYOFF vs REGULAR SEASON ANALYSIS =====")
+print("PLAYOFF vs REGULAR SEASON ANALYSIS ")
 print("1. Total Playoff Games:", total_playoff_games)
 print("2. Avg FG Attempts/Game (Playoffs):", avg_fga_playoffs)
 print("3. FG% Comparison (Reg vs Playoffs):")
 for item in fg_comparison:
-    print(f"   {item[0]}: REG {item[1]} vs PO {item[2]} → Higher in: {item[3]}")
+    print(f"   {item[0]}: REG {item[1]} vs PO {item[2]}   Higher in: {item[3]}")
 print("4. MPG Comparison:")
 for m in mpg_comparison:
     print(f"   {m[0]}: REG {m[1]} MPG vs PO {m[2]} MPG")
